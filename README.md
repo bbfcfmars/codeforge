@@ -85,16 +85,20 @@ uv venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 uv pip install -e .
 
-# Start services
+# Start services (Neo4j, Qdrant, Redis)
 docker-compose up -d
 
-# Configure environment
+# Configure environment (REQUIRED before running)
 cp .env.example .env
-# Edit .env with your API keys
+# Edit .env and add your API keys:
+#   - OPENROUTER_API_KEY (required)
+#   - TAVILY_API_KEY (required)
 
-# Run autonomous workflow
-python -m codeforge.main "Generate a REST API for user management"
+# Verify installation and run autonomous workflow
+python -c "import asyncio; from codeforge import run_autonomy_workflow; print(asyncio.run(run_autonomy_workflow('Generate a simple Python function to add two numbers')))"
 ```
+
+> **Note**: Make sure Docker services are running and API keys are configured in `.env` before running the workflow.
 
 ## 🏗️ Architecture
 
