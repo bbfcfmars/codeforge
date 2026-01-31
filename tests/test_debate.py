@@ -9,8 +9,8 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from ..debate import run_debate, vote
-from ..state import State
+from codeforge.debate import run_debate, vote
+from codeforge.state import State
 
 
 @pytest.mark.asyncio
@@ -25,7 +25,7 @@ async def test_debate_consensus() -> None:
         "long_term": {},
     }
     with patch(
-        "..debate.route_model",
+        "codeforge.debate.route_model",
         new_callable=AsyncMock,
         side_effect=lambda t, c: {
             "response": "Pro: Faster I/O"
@@ -57,7 +57,7 @@ async def test_debate_refine() -> None:
         "long_term": {},
     }
     with patch(
-        "..debate.route_model",
+        "codeforge.debate.route_model",
         new_callable=AsyncMock,
         side_effect=lambda t, c: {
             "response": "Pro: Scale"
@@ -89,7 +89,7 @@ async def test_debate_single_round() -> None:
         "long_term": {},
     }
     with patch(
-        "..debate.route_model",
+        "codeforge.debate.route_model",
         new_callable=AsyncMock,
         side_effect=lambda t, c: {
             "response": "Pro: Flexible"
