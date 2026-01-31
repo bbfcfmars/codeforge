@@ -10,8 +10,8 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from ..config import settings
-from ..main import run_autonomy_workflow
+from codeforge.config import settings
+from codeforge.main import run_autonomy_workflow
 
 
 @pytest.mark.asyncio
@@ -19,17 +19,17 @@ async def test_autonomy_workflow_full() -> None:
     """Test end-to-end workflow with real-world PRD: 'Generate add function'; expect task pull, RAG fusion, debate refine, impl code."""
     with (
         patch(
-            "..main.graphrag_plus",
+            "codeforge.main.graphrag_plus",
             new_callable=AsyncMock,
             return_value=[{"content": "RAG: def add(a,b): return a+b"}],
         ) as mock_rag,
         patch(
-            "..main.run_debate",
+            "codeforge.main.run_debate",
             new_callable=AsyncMock,
             return_value={"messages": ["Debate: Simple add ok"]},
         ) as mock_debate,
         patch(
-            "..main.route_model",
+            "codeforge.main.route_model",
             new_callable=AsyncMock,
             return_value={"response": "def add(a: int, b: int) -> int: return a + b"},
         ) as mock_route,
@@ -53,17 +53,17 @@ async def test_autonomy_workflow_gpu() -> None:
     """Test workflow with GPU toggle; real-world: 'Optimize matrix mult' expecting compiled invoke."""
     with (
         patch(
-            "..main.graphrag_plus",
+            "codeforge.main.graphrag_plus",
             new_callable=AsyncMock,
             return_value=[{"content": "RAG: Use torch matmul"}],
         ) as mock_rag,
         patch(
-            "..main.run_debate",
+            "codeforge.main.run_debate",
             new_callable=AsyncMock,
             return_value={"messages": ["Debate: GPU ok"]},
         ) as mock_debate,
         patch(
-            "..main.route_model",
+            "codeforge.main.route_model",
             new_callable=AsyncMock,
             return_value={"response": "torch.matmul(A, B)"},
         ) as mock_route,
@@ -87,13 +87,13 @@ async def test_autonomy_workflow_no_task() -> None:
     """Test workflow without pub/sub message; real-world: empty queue fallback."""
     with (
         patch(
-            "..main.graphrag_plus", new_callable=AsyncMock, return_value=[]
+            "codeforge.main.graphrag_plus", new_callable=AsyncMock, return_value=[]
         ) as mock_rag,
         patch(
-            "..main.run_debate", new_callable=AsyncMock, return_value={"messages": []}
+            "codeforge.main.run_debate", new_callable=AsyncMock, return_value={"messages": []}
         ) as mock_debate,
         patch(
-            "..main.route_model", new_callable=AsyncMock, return_value={"response": ""}
+            "codeforge.main.route_model", new_callable=AsyncMock, return_value={"response": ""}
         ) as mock_route,
         patch("redis.Redis.pubsub") as mock_pubsub,
     ):

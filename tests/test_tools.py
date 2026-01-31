@@ -9,8 +9,8 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from ..config import settings
-from ..tools import graphrag_plus
+from codeforge.config import settings
+from codeforge.tools import graphrag_plus
 
 
 @pytest.mark.asyncio
@@ -19,10 +19,10 @@ async def test_graphrag_plus_web_trigger() -> None:
     real-world: query for 'python async best practices'."""
     with (
         patch(
-            "..tools.qdrant.aquery", new_callable=AsyncMock, return_value=[]
+            "codeforge.tools.qdrant.aquery", new_callable=AsyncMock, return_value=[]
         ) as mock_qdrant,
         patch(
-            "..tools.tavily.search",
+            "codeforge.tools.tavily.search",
             return_value=[
                 {
                     "content": "Async best practices: use asyncio.gather for concurrency."
@@ -30,7 +30,7 @@ async def test_graphrag_plus_web_trigger() -> None:
             ],
         ) as mock_tavily,
         patch(
-            "..tools.neo4j_driver.session", new_callable=AsyncMock
+            "codeforge.tools.neo4j_driver.session", new_callable=AsyncMock
         ) as mock_session,
         patch.object(settings, "use_async", True),
         patch.object(settings, "use_sparse", False),
@@ -62,8 +62,8 @@ async def test_graphrag_plus_sparse_sort() -> None:
         {"sparse_score": 0.5, "content": "other"},
     ]
     with (
-        patch("..tools.qdrant.query", return_value=mock_results) as mock_qdrant,
-        patch("..tools.neo4j_driver.session", new_callable=AsyncMock) as mock_session,
+        patch("codeforge.tools.qdrant.query", return_value=mock_results) as mock_qdrant,
+        patch("codeforge.tools.neo4j_driver.session", new_callable=AsyncMock) as mock_session,
         patch.object(settings, "use_sparse", True),
         patch.object(settings, "use_async", False),
     ):
@@ -85,10 +85,10 @@ async def test_graphrag_plus_no_web() -> None:
     mock_vectors = [{"content": "ML basics: supervised vs unsupervised."}]
     with (
         patch(
-            "..tools.qdrant.aquery", new_callable=AsyncMock, return_value=mock_vectors
+            "codeforge.tools.qdrant.aquery", new_callable=AsyncMock, return_value=mock_vectors
         ) as mock_qdrant,
-        patch("..tools.tavily.search") as mock_tavily,
-        patch("..tools.neo4j_driver.session", new_callable=AsyncMock) as mock_session,
+        patch("codeforge.tools.tavily.search") as mock_tavily,
+        patch("codeforge.tools.neo4j_driver.session", new_callable=AsyncMock) as mock_session,
         patch.object(settings, "use_async", True),
     ):
         mock_session.return_value.run = AsyncMock(

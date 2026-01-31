@@ -6,7 +6,7 @@ This module implements a multi-agent debate mechanism using LangGraph.
 
 from typing import Any
 
-from langgraph.graph import StateGraph
+from langgraph.graph import END, StateGraph
 
 from .router import route_model
 from .state import State
@@ -74,8 +74,10 @@ debate_subgraph: StateGraph = StateGraph(State)
 debate_subgraph.add_node("pro", pro_agent)
 debate_subgraph.add_node("con", con_agent)
 debate_subgraph.add_node("moderator", moderator_agent)
-debate_subgraph.add_parallel(["pro", "con"])
-debate_subgraph.add_edge(["pro", "con"], "moderator")
+debate_subgraph.set_entry_point("pro")
+debate_subgraph.add_edge("pro", "con")
+debate_subgraph.add_edge("con", "moderator")
+debate_subgraph.add_edge("moderator", END)
 
 
 async def run_debate(state: State, rounds: int = 2) -> State:
